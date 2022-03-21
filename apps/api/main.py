@@ -4,10 +4,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Depends
 from pydantic.main import BaseModel
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.session import Session
-from sqlalchemy.sql.expression import select
 from starlette.responses import JSONResponse
 
+import models.order  # type: ignore
 from database import Base, engine, get_db
 from dbseed import seed
 from models.customer import Customer
@@ -25,7 +26,14 @@ seed()
 
 
 class Foo(BaseModel):
+    class Order(BaseModel):
+        total_in_cents: int
+
+        class Config:
+            orm_mode = True
+
     name: str
+    orders: list[Order]
 
     class Config:
         orm_mode = True
@@ -39,4 +47,4 @@ class Foo(BaseModel):
     tags=[""],
 )
 async def get_foo(db: Session = cast(Session, Depends(get_db))):
-    return db.execute(select(Customer.name)).first()
+    return db.query(Customer).options(joinedload(Customer.orders)).first()
