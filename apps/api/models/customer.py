@@ -19,6 +19,8 @@ class Customer(Base):
 
     id = Column(String, primary_key=True, autoincrement=False)
     name = Column(String, nullable=False)
-    tier = Column(ENUM(LoyaltyTier), nullable=False)
+    tier = Column(
+        ENUM(LoyaltyTier), nullable=False, server_default=LoyaltyTier.bronze.value
+    )
 
     orders = relationship("Order", back_populates="customer")

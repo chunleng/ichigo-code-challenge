@@ -1,11 +1,14 @@
+from os import getenv
 from typing import Any
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+port = getenv("DB_PORT", "15432")
+
 engine = create_engine(
-    "postgresql://postgres:password@localhost:15432/postgres",
+    f"postgresql://postgres:password@localhost:{port}/postgres",
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

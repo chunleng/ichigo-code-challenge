@@ -91,7 +91,7 @@ def test_create_order_promote_tier_with_existing_order(
     assert customer.tier == LoyaltyTier.gold
 
 
-@freeze_time("2022-03-24")
+@freeze_time("2020-03-24")
 def test_create_order_promote_tier_with_expired_order(
     client: TestClient, post_data: CreateOrderRequest, db: Session
 ):
@@ -101,7 +101,7 @@ def test_create_order_promote_tier_with_expired_order(
             id="1",
             total_in_cents=1,
             customer_id=post_data.customer_id,
-            purchase_on=datetime(2020, 12, 31),
+            purchase_on=datetime(2018, 12, 31),
         )
     )
     db.commit()
@@ -113,3 +113,27 @@ def test_create_order_promote_tier_with_expired_order(
     assert response.json() == {}
     customer = cast(Customer, db.query(Customer).one())
     assert customer.tier == LoyaltyTier.silver
+
+
+@freeze_time("2020-03-24")
+def test_create_order_promote_tier_current_order_edge_case(
+    client: TestClient, post_data: CreateOrderRequest, db: Session
+):
+    db.add(Customer(id=post_data.customer_id, name=post_data.customer_name))
+    db.add(
+        Order(
+            id="1",
+            total_in_cents=1,
+            customer_id=post_data.customer_id,
+            purchase_on=datetime(2019, 1, 1),
+        )
+    )
+    db.commit()
+    post_data.total_in_cents = tier_minimum[LoyaltyTier.gold] - 1
+
+    response = client.post(TARGET_URL, data=post_data.json())
+
+    assert response.status_code == 200
+    assert response.json() == {}
+    customer = cast(Customer, db.query(Customer).one())
+    assert customer.tier == LoyaltyTier.gold

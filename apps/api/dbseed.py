@@ -18,9 +18,9 @@ def seed():
     db.execute(delete(Order))
     db.execute(delete(Customer))
     db.add_all(
-        [get_sample_customer(str(id), LoyaltyTier.bronze) for id in range(3)]
-        + [get_sample_customer(str(id), LoyaltyTier.silver) for id in range(3, 6)]
-        + [get_sample_customer(str(id), LoyaltyTier.gold) for id in range(6, 9)]
+        [get_sample_customer(str(id), LoyaltyTier.bronze) for id in range(1, 4)]
+        + [get_sample_customer(str(id), LoyaltyTier.silver) for id in range(4, 7)]
+        + [get_sample_customer(str(id), LoyaltyTier.gold) for id in range(7, 10)]
     )
     db.commit()
 
@@ -54,3 +54,7 @@ def get_sample_customer(customer_id: str, tier: LoyaltyTier):
             )
         ],
     )
+
+
+if __name__ == "__main__":
+    seed()

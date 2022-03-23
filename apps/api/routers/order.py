@@ -11,9 +11,9 @@ from sqlalchemy.sql.functions import sum
 from starlette.responses import JSONResponse
 
 from database import get_db
-from models.customer import Customer, LoyaltyTier
+from models.customer import Customer
 from models.order import Order
-from util import calculate_tier
+from util import calculate_tier, tier_start_date
 
 router = APIRouter()
 
@@ -59,7 +59,7 @@ async def create_order(
         db.execute(
             select(sum(Order.total_in_cents))
             .where(Customer.id == body.customer_id)
-            .where(Order.purchase_on > tier_start_date())
+            .where(Order.purchase_on >= tier_start_date())
             .join(Customer.orders)
             .group_by(Customer.id)
         ).scalar()
@@ -67,7 +67,6 @@ async def create_order(
     )
 
     customer.tier = cast(Any, calculate_tier(customer_spending))
-    db.add(customer)
     db.commit()
 
     return {}
