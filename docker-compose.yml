@@ -7,3 +7,20 @@ services:
         NEXT_PUBLIC_API_PATH: http://localhost:38000
     ports:
       - "33000:3000"
+  api:
+    build:
+      context: ./apps/api/
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - "38000:8000"
+  db:
+    image: postgres:14.2-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+
+volumes:
+  db-data:

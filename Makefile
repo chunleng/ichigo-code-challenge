@@ -18,7 +18,7 @@ dev-front:
 dev-api:
 	cd apps/api; direnv exec . uvicorn main:app --reload
 dev-db:
-	docker run -p 15432:5432 -e POSTGRES_PASSWORD=password postgres
+	docker run -p 15432:5432 -e POSTGRES_PASSWORD=password postgres:14.2-alpine
 dev-codegen:
 	{ \
 		cd apps/front; \
@@ -28,4 +28,4 @@ dev-codegen:
 test-api:
 	cd apps/api; direnv exec . env DB_PORT=25432 pytest tests
 test-db:
-	docker run -p 25432:5432 -e POSTGRES_PASSWORD=password postgres
+	docker run -p 25432:5432 -e POSTGRES_PASSWORD=password postgres:14.2-alpine

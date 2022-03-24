@@ -5,10 +5,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+host = getenv("DB_HOST", "localhost")
 port = getenv("DB_PORT", "15432")
 
 engine = create_engine(
-    f"postgresql://postgres:password@localhost:{port}/postgres",
+    f"postgresql://postgres:password@{host}:{port}/postgres",
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

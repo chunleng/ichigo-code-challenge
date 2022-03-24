@@ -7,14 +7,15 @@ authors = ["Lim Chun Leng <limchunleng@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = "^0.75.0"
+uvicorn = {extras = ["standard"], version = "^0.17.6"}
+Faker = "^13.3.2"
+SQLAlchemy = "^1.4.32"
 psycopg2 = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
 isort = "^5.10.1"
-uvicorn = {extras = ["standard"], version = "^0.17.6"}
 sqlalchemy2-stubs = "^0.0.2-alpha.20"
-Faker = "^13.3.2"
 pytest = "^7.1.1"
 requests = "^2.27.1"
 pytest-freezegun = "^0.4.2"
