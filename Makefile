@@ -19,6 +19,11 @@ dev-api:
 	cd apps/api; direnv exec . uvicorn main:app --reload
 dev-db:
 	docker run -p 15432:5432 -e POSTGRES_PASSWORD=password postgres
+dev-codegen:
+	{ \
+		cd apps/front; \
+		yarn openapi-generator-cli generate -i http://localhost:8000/openapi.json -g typescript-axios -o components/generated/api; \
+	}
 
 test-api:
 	cd apps/api; direnv exec . env DB_PORT=25432 pytest tests
