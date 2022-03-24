@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  front:
+    build:
+      context: ./apps/front/
+      args:
+        NEXT_PUBLIC_API_PATH: http://localhost:38000
+    ports:
+      - "33000:3000"
