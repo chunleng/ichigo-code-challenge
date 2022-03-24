@@ -1,3 +1,26 @@
-.main {
-  font-weight: bold
+.mainPanel {
+  padding: 50px 30px;
+  background-color: #C9E6F3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary .tier {
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.summary .tier.gold{
+  color: #EFA700;
+}
+.summary .tier.silver{
+  color: #A0A0A0;
+}
+
+.footer {
+  text-align: center;
+}
+.footer a {
+  text-decoration: underline;
 }
