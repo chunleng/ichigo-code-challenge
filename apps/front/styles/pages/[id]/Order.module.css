@@ -1,0 +1,17 @@
+.table {
+  border-collapse: collapse;
+}
+
+.table thead {
+  text-align: left;
+  background-color: #67899A;
+  color: #C9E6F3;
+}
+.table th, .table td {
+  padding: 6px;
+}
+
+.table td {
+  border-bottom: solid 1px #67899A;
+  background-color: #E2F6FF;
+}
