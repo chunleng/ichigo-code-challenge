@@ -69,13 +69,15 @@ function LoyaltyPanel({ customerId }: { customerId: string }): ReactElement {
             loyaltyInformation.purchase_amount_in_cents)
         }
       />
-      <div className={styles.footer}>
-        $
-        {(
-          loyaltyInformation.purchase_amount_to_next_tier_in_cents / 100
-        ).toLocaleString()}{" "}
-        more to promotion!
-      </div>
+      {loyaltyInformation.current_tier == "gold" ? null : (
+        <div className={styles.footer}>
+          $
+          {(
+            loyaltyInformation.purchase_amount_to_next_tier_in_cents / 100
+          ).toLocaleString()}{" "}
+          more to promotion!
+        </div>
+      )}
     </>
   );
 }
