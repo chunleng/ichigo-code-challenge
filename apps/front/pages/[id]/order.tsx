@@ -1,13 +1,12 @@
 import { DefaultLayout } from "components/layout";
 import type { NextPage } from "next";
-import styles from "../styles/Home.module.css";
 
-const Home: NextPage = () => {
+const Order: NextPage = () => {
   return (
     <DefaultLayout>
-      <div className={styles.main}>TEST</div>
+      TEST
     </DefaultLayout>
   );
 };
 
-export default Home;
+export default Order;

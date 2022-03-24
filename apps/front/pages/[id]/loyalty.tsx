@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import {
   CustomerLoyaltyInformation,
   DefaultApi,
@@ -6,35 +7,53 @@ import { DefaultLayout } from "components/layout";
 import { ProgressBar } from "components/progressbar";
 import { Config } from "config/openapi";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
+import styles from "../../styles/pages/[id]/Loyalty.module.css";
 
-const Home: NextPage = () => {
+const Loyalty: NextPage = () => {
   return (
     <DefaultLayout>
-      <LoyaltyPanel customerId="3" />
+      <Content />
     </DefaultLayout>
   );
 };
 
+function Content(): ReactElement {
+  const router = useRouter();
+
+  if (router == null || !router.isReady) return <></>;
+
+  const { id } = router.query;
+  if (typeof id !== "string") return <>Please input a valid customer ID</>;
+
+  return <LoyaltyPanel customerId={id} />;
+}
 function LoyaltyPanel({ customerId }: { customerId: string }): ReactElement {
   const [loyaltyInformation, setLoyaltyInformation] =
-    useState<CustomerLoyaltyInformation>();
+    useState<CustomerLoyaltyInformation | null>();
 
   useEffect(() => {
     void new DefaultApi(Config())
       .getLoyaltyInformationByCustomer(customerId)
-      .then((value) => {
-        setLoyaltyInformation(value.data);
-      });
+      .then(
+        (value) => {
+          setLoyaltyInformation(value.data);
+        },
+        ({ response }: { response?: AxiosResponse<unknown> }) => {
+          if (response?.status === 404) setLoyaltyInformation(null);
+        }
+      );
   }, [customerId]);
 
-  if (loyaltyInformation == null) return <></>;
+  if (loyaltyInformation === undefined) return <></>;
+  if (loyaltyInformation === null)
+    return <div>Customer &quot;{customerId}&quot; does not exist!</div>;
 
   return (
-    <div className={styles.mainPanel}>
+    <>
       <div className={styles.summary}>
-        Customer #{customerId} is currently at&nbsp;
+        Customer &quot;{customerId}&quot; is currently at&nbsp;
         <span
           className={`${styles.tier} ${
             styles[loyaltyInformation.current_tier]
@@ -57,8 +76,8 @@ function LoyaltyPanel({ customerId }: { customerId: string }): ReactElement {
         ).toLocaleString()}{" "}
         more to promotion!
       </div>
-    </div>
+    </>
   );
 }
 
-export default Home;
+export default Loyalty;
