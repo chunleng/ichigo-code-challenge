@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Optional, cast
 
 from fastapi.params import Depends
@@ -70,3 +70,41 @@ async def create_order(
     db.commit()
 
     return {}
+
+
+class OrderResponse(BaseModel):
+    id: str
+    purchase_on: date
+    total_in_cents: int
+    customer_id: str
+
+    class Config:
+        orm_mode = True
+
+
+@router.get(
+    "/ListOrdersByCustomerId",
+    operation_id="ListOrdersByCustomerId",
+    response_class=JSONResponse,
+    response_model=list[OrderResponse],
+)
+async def list_orders_by_customer_id(
+    id: str,
+    page: int = 1,
+    page_size: int = 0,
+    db: Session = cast(Session, Depends(get_db)),
+):
+    if db.query(Customer).get(id) is None:
+        return JSONResponse({}, status_code=404)
+
+    query = (
+        db.query(Order)
+        .where(Order.customer_id == id)
+        .where(Order.purchase_on >= tier_start_date())
+    )
+
+    if page_size > 0:
+        query = query.offset((page - 1) * page_size).limit(page_size)
+
+    orders = query.all()
+    return orders
